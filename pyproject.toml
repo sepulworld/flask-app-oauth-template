@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "flask-app-oauth-template"
+version = "0.0.1"
+description = "Flask app template with some oauth and local development prepped up"
+authors = ["Zane Williamson <zane.w@hey.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+battenberg = "^0.4.1"
+cookiecutter = "^2.1.0"
+pygit2 = "^1.9.2"
+requests = "^2.27.1"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

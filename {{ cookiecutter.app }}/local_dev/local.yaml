@@ -1,0 +1,76 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ cookiecutter.app }}-pv-claim
+  labels:
+    app: {{ cookiecutter.app }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1G
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ cookiecutter.app }}
+  labels:
+    app: {{ cookiecutter.app }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ cookiecutter.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ cookiecutter.app }}
+    spec:
+      containers:
+        - name: {{ cookiecutter.app }}
+          image: {{ cookiecutter.app }}
+          ports:
+            - containerPort: 5000 
+          #
+          #env:
+            #  - name: DATABASE_URL 
+            #  value: sqlite:////db/app.db
+         #volumeMounts:
+           # - name: persistent-storage
+           #    mountPath: /db
+           #volumes:
+             #- name: persistent-storage
+             # persistentVolumeClaim:
+               #claimName: {{ cookiecutter.app }}-pv-claim            
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default 
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ cookiecutter.app }}-pod-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log", "namespaces", "events"]
+  verbs: ["get", "watch", "list", "log"]
+- apiGroups: ["apps", "extensions"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ cookiecutter.app }}-pod-reader
+subjects:
+- kind: ServiceAccount
+  name: default 
+  namespace: default 
+roleRef:
+  kind: ClusterRole
+  name: {{ cookiecutter.app }}-pod-reader
+  apiGroup: rbac.authorization.k8s.io

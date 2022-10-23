@@ -1,0 +1,7 @@
+print("{{ cookiecutter.app }}!")
+local_resource("lint", ["poetry", "run", "flake8", "app", "{{ cookiecutter.app }}.py"])
+local_resource("black", ["poetry", "run", "black", "--check", "app", "{{ cookiecutter.app }}.py"])
+local_resource("isort", ["poetry", "run", "isort", "--check-only", "app", "{{ cookiecutter.app }}.py"])
+docker_build('{{ cookiecutter.app }}', '.')
+k8s_yaml('local_dev/local.yaml')
+k8s_resource('{{ cookiecutter.app }}', port_forwards=8080)

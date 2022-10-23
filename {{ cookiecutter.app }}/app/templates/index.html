@@ -1,0 +1,18 @@
+{% raw %}
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+{% endraw %}
+    <h1> {{ cookiecutter.app }} </h1>
+{% raw %}
+    <p>
+        New App is ready to development 
+    </p>
+    {% if form %}
+    {{ wtf.quick_form(form) }}
+    {{ wtf.red}}
+    <br>
+    {% endif %}
+{% endblock %}
+{% endraw %}
